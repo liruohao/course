@@ -26,7 +26,7 @@
     <div style="margin-bottom: 10px">
       <Button type="primary" title="新增" @click="openAddUserModal">新增</Button>
       <Button type="error" title="批量删除" @click="batchUserDel">批量删除</Button>
-      <Button type="primary" title="导出用户信息">导出用户信息</Button>
+<!--      <Button type="primary" title="导出用户信息">导出用户信息</Button>-->
     </div>
     <Table :columns="userColumns" :data="userList" border ref="selection" @on-selection-change="handleRowChange"></Table>
     <Page :total="total"

@@ -47,7 +47,7 @@ export default {
   },
   mounted () {
     console.log(sessionStorage.getItem('role'))
-    if (sessionStorage.getItem('role') !== '2') {
+    if (sessionStorage.getItem('role') !== '1') {
       this.tabsList = [{
         title: '个人资料',
         name: 'PersonalData'

@@ -23,20 +23,20 @@
         </Row>
       </Form>
       <Table :columns="courseColumns" :data="courseList" height="400" border ref="selection"></Table>
-      <Page :total="total"
-            style="margin-top: 10px;  width: 100%;
-      height: 56px;
-      line-height: 56px;
-      padding: 0 15px;
-      box-sizing: border-box;"
-            show-elevator
-            show-sizer
-            show-total
-            :current="pageNo"
-            :page-size-opts="[10, 20, 30, 50]"
-            :page-size="pageSize"
-            @on-change="pageChange"
-            @on-page-size-change="pageSizeChange"/>
+<!--      <Page :total="total"-->
+<!--            style="margin-top: 10px;  width: 100%;-->
+<!--      height: 56px;-->
+<!--      line-height: 56px;-->
+<!--      padding: 0 15px;-->
+<!--      box-sizing: border-box;"-->
+<!--            show-elevator-->
+<!--            show-sizer-->
+<!--            show-total-->
+<!--            :current="pageNo"-->
+<!--            :page-size-opts="[10, 20, 30, 50]"-->
+<!--            :page-size="pageSize"-->
+<!--            @on-change="pageChange"-->
+<!--            @on-page-size-change="pageSizeChange"/>-->
     </Modal>
     <Modal v-model="exportModelFlag" footer-hide title="查看课堂作业" width="700">
       <p v-html="userVO.fileContent"></p>
@@ -278,7 +278,7 @@ export default {
         menuId: this.menuId,
         fileName: this.fileVO.fileName
       }, res => {
-        this.courseList = res.data.records
+        this.courseList = res.data
         this.total = res.data.total
       })
     },

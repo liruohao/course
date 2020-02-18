@@ -71,7 +71,7 @@
           </FormItem>
           </Col>
         </Row>
-        <Button type="primary" style="margin-bottom: 10px" @click="saveFiles('fileVO', 1)">提交</Button>
+        <Button type="primary" style="margin-bottom: 10px" @click="saveFiles('fileVO', 1)" v-if="textFlag === '已结束'">提交</Button>
         <div style="margin-bottom: 15px">上传文件</div>
       <Upload :action="importExcelUrl" ref="importfile" :show-upload-list="false" :max-size=10240 name="file" :data="fileData" style="margin-bottom: 15px" :on-success="fileSuccess">
         <Button icon="ios-cloud-upload-outline">选择文件</Button>
@@ -92,20 +92,20 @@
       </Form>
       <Button type="error" @click="batchMenuDel" style="margin-bottom: 15px">批量删除</Button>
       <Table :columns="courseColumns" :data="courseList" height="400" border ref="selection" @on-selection-change="handleRowChange" ></Table>
-      <Page :total="total"
-      style="margin-top: 10px;  width: 100%;
-      height: 56px;
-      line-height: 56px;
-      padding: 0 15px;
-      box-sizing: border-box;"
-      show-elevator
-      show-sizer
-      show-total
-      :current="pageNo"
-      :page-size-opts="[10, 20, 30, 50]"
-      :page-size="pageSize"
-      @on-change="pageChange"
-      @on-page-size-change="pageSizeChange"/>
+<!--      <Page :total="total"-->
+<!--      style="margin-top: 10px;  width: 100%;-->
+<!--      height: 56px;-->
+<!--      line-height: 56px;-->
+<!--      padding: 0 15px;-->
+<!--      box-sizing: border-box;"-->
+<!--      show-elevator-->
+<!--      show-sizer-->
+<!--      show-total-->
+<!--      :current="pageNo"-->
+<!--      :page-size-opts="[10, 20, 30, 50]"-->
+<!--      :page-size="pageSize"-->
+<!--      @on-change="pageChange"-->
+<!--      @on-page-size-change="pageSizeChange"/>-->
     </Modal>
   </div>
 </template>
@@ -425,8 +425,8 @@ export default {
         menuId: this.fileData.menuId,
         fileName: this.fileVO.fileName
       }, res => {
-        this.courseList = res.data.records
-        this.total = res.data.total
+        this.courseList = res.data
+        // this.total = res.data.total
       })
     },
     pageChange (page) {
