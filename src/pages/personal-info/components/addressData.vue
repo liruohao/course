@@ -7,7 +7,7 @@
         <Button type="error" title="批量删除" @click="batchAddressDel">批量删除</Button>
       <Table style="margin-top: 15px" :columns="addressColumns" :data="addressList" border ref="selection" @on-selection-change="handleRowChange" ></Table>
       <Modal v-model="exportModelFlag" :title="modelTitle" width="700">
-        <Form ref="userVO"  :model="userVO" :rules="userVOFormRules" label-position="right" class="label-input-form" v-show="this.usersType === '1'">
+        <Form ref="userVO"  :model="userVO" :rules="userVOFormRules" label-position="right" class="label-input-form">
           <Row>
             <Col>
               <FormItem label="收货人" prop="receiver">
@@ -49,6 +49,11 @@ export default {
         teleNumber: '',
         receiver: '',
         usersType: ''
+      },
+      userVOFormRules: {
+        teleNumber: [{required: true, type: 'string', validator: this.checkMobilePhone, trigger: 'blur'}],
+        receiver: [{required: true, message: '收货人不能为空', trigger: 'blur'}],
+        address: [{required: true, message: '地址不能为空', trigger: 'blur'}]
       },
       exportModelFlag: false,
       modelTitle: '',
@@ -106,9 +111,9 @@ export default {
                   click: () => {
                     this.$Modal.confirm({
                       title: '提示',
-                      content: `您确认要删除 <span style="color: #E4393C">${params.row.uname}</span> 吗？`,
+                      content: `您确认要删除这条数据吗？`,
                       onOk: () => {
-                        this.addressDel(params.row.id)
+                        this.menuDel(params.row.id)
                       }})
                   }
                 }
@@ -118,42 +123,62 @@ export default {
         }
       ],
       addressList: [],
-      clickCourseList: []
+      clickMenuList: [],
+      usersType: ''
     }
   },
   props: {},
   watch: {},
   methods: {
+    // 验证手机号码
+    checkMobilePhone (rule, value, callback) {
+      if (!value) {
+        return callback(new Error('手机号码不能为空'))
+      }
+      let tel = /^1([358][0-9]|4[579]|66|7[0135678]|9[89])[0-9]{8}$/
+      if (!value.match(tel)) {
+        return callback(new Error('手机格式不正确'))
+      } else {
+        callback()
+      }
+    },
     saveUserInfo (name) {
       this.$refs[name].validate((valid) => {
-        if (this.usersType === '1') {
-          if (valid) {
-            if (this.usersType === '1') {
-              this.$http.post('sys-user-address/addSysUserAddress', {
-                userId: JSON.parse(sessionStorage.getItem('user')).id,
-                address: this.userVO.address,
-                receiver: this.userVO.receiver,
-                teleNumber: this.userVO.teleNumber
-              }, res => {
-                if (res.code === 'M0000') {
-                  this.closeDrawer()
-                  this.$Message.success('新增成功')
-                } else {
-                  this.$Message.warning(res.msg)
-                }
-              })
-            } else {
-              if (this.clickUserList.length === 0) {
-                return this.$Message.warning('请选收货地址')
+        if (valid) {
+          if (this.usersType === '1') {
+            this.$http.post('sys-user-address/addSysUserAddress', {
+              userId: JSON.parse(sessionStorage.getItem('user')).id,
+              address: this.userVO.address,
+              receiver: this.userVO.receiver,
+              teleNumber: this.userVO.teleNumber
+            }, res => {
+              if (res.code === 'M0000') {
+                this.closeDrawer()
+                this.getAddressByList()
+                this.$Message.success('新增成功')
+              } else {
+                this.$Message.warning(res.msg)
               }
-            }
+            })
           } else {
-            this.$Message.error('请正确填写表单')
+            this.$http.put('sys-user-address/updateSysUserAddress', {
+              userId: JSON.parse(sessionStorage.getItem('user')).id,
+              address: this.userVO.address,
+              receiver: this.userVO.receiver,
+              teleNumber: this.userVO.teleNumber,
+              id: this.userVO.id
+            }, res => {
+              if (res.code === 'M0000') {
+                this.closeDrawer()
+                this.getAddressByList()
+                this.$Message.success('编辑成功')
+              } else {
+                this.$Message.warning(res.msg)
+              }
+            })
           }
         } else {
-          if (this.clickUserList.length === 0) {
-            return this.$Message.warning('请选收货地址')
-          }
+          this.$Message.error('请正确填写表单')
         }
       })
     },
@@ -161,12 +186,52 @@ export default {
       this.$refs['userVO'].resetFields()
       this.exportModelFlag = false
     },
+    // 删除
+    menuDel (id) {
+      let ids = []
+      ids.push(id)
+      this.$http.postData('sys-user-address/batchDelete', {ids: ids}, res => {
+        if (res.code === 'M0000') {
+          this.getAddressByList()
+          this.$Message.success('删除成功')
+        }
+      })
+    },
     // 表格复选框点击
     handleRowChange (selection) {
-      this.clickCourseList = selection
+      this.clickMenuList = selection
     },
-    openAddAddressModal () {},
-    batchAddressDel () {},
+    openAddAddressModal () {
+      this.usersType = '1'
+      this.$refs['userVO'].resetFields()
+      this.modelTitle = '新增收货地址'
+      this.exportModelFlag = true
+    },
+    batchAddressDel () {
+      if (this.clickMenuList.length > 0) {
+        let userIds = []
+        for (let i = 0; i < this.clickMenuList.length; i++) {
+          let userId = this.clickMenuList[i].id
+          userIds.push(userId)
+        }
+        let userIdsStr = userIds.join(',')
+        this.$Modal.confirm({
+          title: '请选择',
+          content: '确定删除这些数据?',
+          onOk: () => {
+            this.$http.postData('sys-user-address/batchDelete', {
+              ids: userIdsStr
+            }, res => {
+              if (res.code === 'M0000') {
+                this.getAddressByList()
+                this.$Message.success('删除成功')
+              }
+            })
+          }})
+      } else {
+        this.$Message.error('请选择一条数据进行删除')
+      }
+    },
     getAddressByList () {
       this.$http.get('sys-user-address/getAddressByList', {
         userId: JSON.parse(sessionStorage.getItem('user')).id
@@ -174,7 +239,13 @@ export default {
         this.addressList = res.data
       })
     },
-    addressEdit (row) {},
+    addressEdit (row) {
+      this.usersType = '2'
+      this.userVO = JSON.parse(JSON.stringify(row))
+      this.$refs['userVO'].resetFields()
+      this.modelTitle = '编辑收货地址'
+      this.exportModelFlag = true
+    },
     addressDel (id) {}
   },
   computed: {},
