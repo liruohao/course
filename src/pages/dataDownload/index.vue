@@ -176,7 +176,7 @@ export default {
         this.courseList = res.data.records
         this.total = res.data.total
       })
-    },
+    }
 
   },
   components: {},

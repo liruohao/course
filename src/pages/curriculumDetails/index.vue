@@ -163,7 +163,7 @@ export default {
       this.$http.get('course-assess/getAssessByList', {
         courseId: id
       }, res => {
-        res.data.map((item) =>{
+        res.data.map((item) => {
           item.assessLevel = Number(item.assessLevel)
           this.getAssessList.push(item)
         })
