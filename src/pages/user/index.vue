@@ -371,8 +371,11 @@ export default {
     },
     pageChange (page) {
       this.pageNo = page
+      this.getUserByPage()
     },
     pageSizeChange (pageSize) {
+      this.pageSize = pageSize
+      this.getUserByPage()
     },
     // 删除用户信息
     userDel (id) {
