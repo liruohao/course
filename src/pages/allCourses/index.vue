@@ -124,6 +124,7 @@ export default {
         float: left;
         width: 80%;
         height: 150px;
+        overflow-y: auto;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         padding: 4px 0 5px 32px;

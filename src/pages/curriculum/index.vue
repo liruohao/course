@@ -43,7 +43,7 @@
       </Carousel>
       <!--主体-->
       <div class="curriculum-content">
-        <div class="list_course_show" v-for="(item,index) in courseList2" :key="index">
+        <div class="list_course_show" v-for="(item,index) in courseList2" :key="index"  @click="listClick(item)">
 
           <div class="course_show_img box_sizing">
 
