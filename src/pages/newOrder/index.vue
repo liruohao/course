@@ -182,14 +182,15 @@ export default {
       this.usersType = '2'
       this.modelTitle = '修改收货地址'
       this.exportModelFlag = true
+      this.getAddressByList()
     },
     closeDrawer () {
       this.$refs['userVO'].resetFields()
       this.exportModelFlag = false
     },
     saveUserInfo (name) {
-      this.$refs[name].validate((valid) => {
-        if (this.usersType === '1') {
+      if (this.usersType === '1') {
+        this.$refs[name].validate((valid) => {
           if (valid) {
             if (this.usersType === '1') {
               this.$http.post('sys-user-address/addSysUserAddress', {
@@ -214,12 +215,18 @@ export default {
           } else {
             this.$Message.error('请正确填写表单')
           }
-        } else {
-          if (this.clickUserList.length === 0) {
-            return this.$Message.warning('请选收货地址')
-          }
+        })
+      } else {
+        if (this.clickUserList.length === 0) {
+          return this.$Message.warning('请选收货地址')
+        } else if (this.clickUserList.length > 1) {
+          return this.$Message.warning('最多选择一条')
         }
-      })
+        console.log(this.clickUserList)
+        this.information = this.clickUserList[0]
+        this.exportModelFlag = false
+        this.$Message.success('修改成功')
+      }
     },
     getAddressByList () {
       this.$http.get('sys-user-address/getAddressByList', {

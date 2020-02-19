@@ -11,7 +11,7 @@
                 <p class="data_download_list_item_hint">
                   课程时间： {{item.startTime}} - {{item.endTime}}
                 </p>
-                <img class="data_download_list_item_arrow" src="../../assets/imgs/右箭头(1).png" @click="fileClick(item.id)"/>
+                <img class="data_download_list_item_arrow" src="../../assets/imgs/右箭头(1).png" @click.stop="fileClick(item.id)"/>
               </a>
             </li>
           </ul>
@@ -148,7 +148,7 @@ export default {
     fileClick (id) {
       this.detailsId = id
       this.importModalshowflag = true
-      this.getFileByPage()
+      this.getFileByPage(id)
     },
     pageChange (page) {
       this.pageNo = page
@@ -166,11 +166,11 @@ export default {
         this.data = res.data
       })
     },
-    getFileByPage () {
+    getFileByPage (id) {
       this.$http.get('course-file/getFileByPage', {
         page: this.pageNo,
-        pageSize: this.pageSize,
-        detailsId: this.detailsId,
+        pageSize: 99999,
+        detailsId: id,
         fileName: this.fileVO.fileName
       }, res => {
         this.courseList = res.data

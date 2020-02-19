@@ -421,7 +421,7 @@ export default {
     getFileByPage () {
       this.$http.get('course-file/getFileByPage', {
         page: this.pageNo,
-        pageSize: this.pageSize,
+        pageSize: 99999,
         menuId: this.fileData.menuId,
         fileName: this.fileVO.fileName
       }, res => {

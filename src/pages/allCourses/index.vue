@@ -73,7 +73,7 @@ export default {
       }, res => {
         res.data.map((item) => {
           this.$http.get('course-menu/getMenuByList', {
-            id: item.detailsId
+            courseId: item.detailsId
           }, res => {
             res.data.map((item) => {
               if (item.menuState === null || item.menuState === '') {
