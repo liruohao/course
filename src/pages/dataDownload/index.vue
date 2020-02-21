@@ -4,14 +4,14 @@
         <div class="data_download_con_hd">
           <ul class="data_download_list_hd">
             <li class="data_download_list_item" v-for="(item,index) in data" :key="index">
-              <a @click="fileClick(item.id)" data-course="" class="data_download_list_item_link">
+              <a @click="fileClick(item.detailsId)" data-course="" class="data_download_list_item_link">
                 <h3 class="data_download_list_item_title">
                   {{item.courseName}}
                 </h3>
                 <p class="data_download_list_item_hint">
                   课程时间： {{item.startTime}} - {{item.endTime}}
                 </p>
-                <img class="data_download_list_item_arrow" src="../../assets/imgs/右箭头(1).png" @click.stop="fileClick(item.id)"/>
+                <img class="data_download_list_item_arrow" src="../../assets/imgs/右箭头(1).png" @click.stop="fileClick(item.detailsId)"/>
               </a>
             </li>
           </ul>
